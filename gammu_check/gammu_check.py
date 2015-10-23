@@ -157,7 +157,7 @@ def gammu_restart_daemon():
 
 
         # check log file size
-        check_logfile_size(50)
+        check_logfile_size(10)
 
         #start gammu
         logging.info("Starting gammu ...")
