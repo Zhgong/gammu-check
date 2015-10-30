@@ -208,8 +208,8 @@ def main():
 
         try:
             # if usb stick not exists, sleep 60 seconds
-            if not get_huwei_usb():
-                logging.info('Huawei USB stick is not detected. Sleep 60 seconds.')
+            if not os.path.exists(DEVICE):
+                logging.debug("Device: %s not exists! Sleep 60 seconds." % DEVICE)
                 cycle_time = 60
 
             # if not os.path.exists(DEVICE):
