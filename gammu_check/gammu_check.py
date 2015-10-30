@@ -199,7 +199,7 @@ def usb_modeswitch():
 
 
 def main():
-    cycle_time = 1
+    cycle_time = 10
     logging.info("Starting gammu-check Daemon.")
     Error = 0
     while True:
