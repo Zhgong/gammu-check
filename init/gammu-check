@@ -18,7 +18,7 @@ LOGFILE=/var/log/$DAEMON_NAME.log
 echo `date`: $0: running >> $LOGFILE
 
 start(){
-	python3 $DAEMON $LOGFILE >> $LOGFILE &
+	python3 $DAEMON $LOGFILE >> $LOGFILE 2>&1 &
 	# sleep 1
 	PID=$(ps aux | grep -v grep|grep $SCRIPT |awk '{print $2}') # get PID
 	echo "script started with pid:" $PID
