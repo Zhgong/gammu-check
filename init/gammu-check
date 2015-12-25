@@ -14,8 +14,20 @@ SCRIPT=gammu_check.py
 DAEMON=$DIR/$SCRIPT
 DAEMON_NAME=gammu_check
 LOGFILE=/var/log/$DAEMON_NAME.log
+MAXSIZE=20000000
 
 echo `date`: $0: running >> $LOGFILE
+
+renamelog(){
+    actualsize=$(wc -c <"$LOGFILE")
+
+    if [ $actualsize -ge $MAXSIZE ]; then
+        echo size is over $MAXSIZE bytes
+        mv $LOGFILE ${LOGFILE}.archieve
+    fi
+}
+
+renamelog
 
 start(){
 	python3 $DAEMON $LOGFILE >> $LOGFILE 2>&1 &
