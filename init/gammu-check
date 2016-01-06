@@ -14,7 +14,7 @@ SCRIPT=gammu_check.py
 DAEMON=$DIR/$SCRIPT
 DAEMON_NAME=gammu_check
 LOGFILE=/var/log/$DAEMON_NAME.log
-MAXSIZE=20000000
+MAXSIZE=10000000
 
 echo `date`: $0: running >> $LOGFILE
 
