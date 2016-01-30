@@ -29,10 +29,10 @@ def logging_config(loggingfile):
     FORMAT = '%(asctime)-15s %(name)s %(levelname)s: %(message)s'
     # logging.basicConfig(level=logging.INFO,filename=loggingfile, format=FORMAT)
     if loggingfile:
-        logging.basicConfig(level=logging.DEBUG,filename=loggingfile, format=FORMAT)
+        logging.basicConfig(level=logging.INFO,filename=loggingfile, format=FORMAT)
         print('Logging file for is: %s'%loggingfile)
     else:
-        logging.basicConfig(level=logging.DEBUG, format=FORMAT)
+        logging.basicConfig(level=logging.INFO, format=FORMAT)
 
 
 # compare last time with current time, if the file has not been changed in "seconds" seconds, return true
@@ -57,19 +57,19 @@ def get_pid(name):
     # getting the pid of gammu-smsd
     try:
         pid = int(subprocess.check_output(cmd, shell=True))
-        logging.debug("Process: %s is running with pid: %s" % (name, pid))
+        logging.info("Process: %s is running with pid: %s" % (name, pid))
     except subprocess.CalledProcessError as e:
         if e.returncode == 1:
-            logging.debug("Process: %s is not running" % name)
+            logging.info("Process: %s is not running" % name)
             return 0
         else:
-            logging.debug("Error while executing %s with return value: %d" % (cmd, e.returncode))
+            logging.info("Error while executing %s with return value: %d" % (cmd, e.returncode))
             return -1
     except ValueError as e:
-        logging.debug("More than one matched process found. Error with: %s." % e)
+        logging.info("More than one matched process found. Error with: %s." % e)
         return -1
     except Exception as e:
-        logging.debug("unkonw Error with: %s." % e)
+        logging.info("unkonw Error with: %s." % e)
         return -1
     return pid
 
@@ -88,13 +88,13 @@ def stop_gammu():
         cmd = r"sudo kill -9 %s" %str(pid)
         try:
             res = subprocess.check_output(cmd, shell=True)
-            logging.debug("Process: %s with pid: %s is killed" % (name, pid))
+            logging.info("Process: %s with pid: %s is killed" % (name, pid))
             return True
         except subprocess.CalledProcessError as e:
             if e.returncode == 1:
                 return True # process not found,
             else:
-                logging.debug("Error while killing process: %s with pid: %s." % (name, pid))
+                logging.info("Error while killing process: %s with pid: %s." % (name, pid))
                 raise
 
 
@@ -122,7 +122,7 @@ def reset_huawei():
     usb = get_huwei_usb()
     id1, id2 = get_usb_id(usb)
     cmd = 'sudo usb_modeswitch -v 0x%s -p%s --reset-usb' %(id1, id2)
-    logging.debug("Resetting USB with command: %s" % cmd)
+    logging.info("Resetting USB with command: %s" % cmd)
     res = subprocess.check_output(cmd, shell=True)
 
 
@@ -133,15 +133,15 @@ def start_gammu():
     cmd = r'sudo /etc/init.d/%s restart' %name
     res = subprocess.check_output(cmd, shell=True)
 
-    logging.debug("%s" %res)
+    logging.info("%s" %res)
 
     pid = get_pid(name)
 
     if pid > 0:
-        logging.debug("Process %s is successfully started with PID: %d." %(name, pid))
+        logging.info("Process %s is successfully started with PID: %d." %(name, pid))
         return True
     else:
-        logging.debug("Failed to start process %s started with PID: %d." %(name, pid))
+        logging.info("Failed to start process %s started with PID: %d." %(name, pid))
         return False
 
 def gammu_restart_daemon():
@@ -191,10 +191,10 @@ def usb_modeswitch():
     lsres = subprocess.check_output(cmd, shell=True).decode().split('\n')
 
     if os.path.exists(DEVICE):
-        logging.debug("Device: %s exists! Success." % DEVICE)
+        logging.info("Device: %s exists! Success." % DEVICE)
         return True
     else:
-        logging.debug("Device: %s not exists! Command failed." % DEVICE)
+        logging.info("Device: %s not exists! Command failed." % DEVICE)
         return False
 
 
@@ -209,7 +209,7 @@ def main():
         try:
             # if usb stick not exists, sleep 60 seconds
             if not os.path.exists(DEVICE):
-                logging.debug("Device: %s not exists! Sleep 60 seconds." % DEVICE)
+                logging.info("Device: %s not exists! Sleep 60 seconds." % DEVICE)
                 cycle_time = 60
 
             # if not os.path.exists(DEVICE):
@@ -223,7 +223,7 @@ def main():
                 Error = 0
                 cycle_time = 1
         except Exception as e:
-            logging.debug('Error: %s' % e)
+            logging.info('Error: %s' % e)
             Error += 1
 
         if Error > 30:

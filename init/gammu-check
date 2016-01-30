@@ -30,7 +30,8 @@ renamelog(){
 renamelog
 
 start(){
-	python3 $DAEMON $LOGFILE >> $LOGFILE 2>&1 &
+	#python3 $DAEMON $LOGFILE >> $LOGFILE 2>&1 &
+	python3 $DAEMON >> $LOGFILE 2>&1 &
 	# sleep 1
 	PID=$(ps aux | grep -v grep|grep $SCRIPT |awk '{print $2}') # get PID
 	echo "script started with pid:" $PID
