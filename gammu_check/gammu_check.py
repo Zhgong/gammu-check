@@ -147,7 +147,7 @@ def start_gammu():
 def gammu_restart_daemon():
     # check if gammu is dead
     if is_gammu_dead():
-        logging.info("gammu-smsd is dead, start restarting process")
+        logging.error("gammu-smsd is dead, start restarting process")
         # stop gammu
         logging.info("Stopping gammu ...")
         stop_gammu()
