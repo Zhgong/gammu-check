@@ -10,13 +10,14 @@ import os
 import sys
 import shutil
 
+
 global LOGFILE
 global DEVICE
 
 LOGFILE = '/var/log/gammu-smsd'
 DEVICE = '/dev/ttyUSB0'
 
-
+CYCLE_TIME = 5
 
 def logging_config(loggingfile):
     # configure logging, log data will be store with the same name.log under the same folder.
@@ -200,6 +201,7 @@ def usb_modeswitch():
 
 def main():
     cycle_time = 10
+    logging.info("<---------------------------->")
     logging.info("Starting gammu-check Daemon.")
     Error = 0
     while True:
@@ -221,7 +223,7 @@ def main():
 
                 gammu_restart_daemon()
                 Error = 0
-                cycle_time = 5
+                cycle_time = CYCLE_TIME
         except Exception as e:
             logging.info('Error: %s' % e)
             Error += 1
