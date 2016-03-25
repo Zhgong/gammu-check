@@ -221,7 +221,7 @@ def main():
 
                 gammu_restart_daemon()
                 Error = 0
-                cycle_time = 1
+                cycle_time = 5
         except Exception as e:
             logging.info('Error: %s' % e)
             Error += 1
