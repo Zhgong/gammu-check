@@ -11,10 +11,11 @@
 
 DIR=/home/osmc/gammu-check/gammu_check
 SCRIPT=gammu_check.py
-DAEMON=$DIR/$SCRIPT
+PARMS=' -i 5'
+DAEMON=$DIR/$SCRIPT$PARMS
 DAEMON_NAME=gammu_check
 LOGFILE=/var/log/$DAEMON_NAME.log
-MAXSIZE=10000000
+MAXSIZE=5000000
 
 echo `date`: $0: running >> $LOGFILE
 

@@ -2,6 +2,7 @@
 
 __author__ = 'gong'
 
+
 import time
 import logging
 import subprocess
@@ -9,7 +10,7 @@ import re
 import os
 import sys
 import shutil
-
+import click
 
 global LOGFILE
 global DEVICE
@@ -18,6 +19,13 @@ LOGFILE = '/var/log/gammu-smsd'
 DEVICE = '/dev/ttyUSB0'
 
 CYCLE_TIME = 5
+
+@click.command()
+@click.option('--interval', '-i', default=2, help='number of greetings')
+def run(interval):
+    CYCLE_TIME = interval
+    logging.info('set CYCLE_TIME: %d '% interval)
+    main()
 
 def logging_config(loggingfile):
     # configure logging, log data will be store with the same name.log under the same folder.
@@ -165,6 +173,7 @@ def gammu_restart_daemon():
         start_gammu()
         logging.info("Process finished.")
 
+
 def check_logfile_size(MAX_SIZE = 20):
     # check gammu-smsd file size
     # if size > 50mb then move (rename) it as archieve
@@ -201,7 +210,6 @@ def usb_modeswitch():
 
 def main():
     cycle_time = 10
-    logging.info("<---------------------------->")
     logging.info("Starting gammu-check Daemon.")
     Error = 0
     while True:
@@ -237,5 +245,6 @@ if __name__ == '__main__':
     else:
         loggingfile = ''
     logging_config(loggingfile)
+    logging.info("<---------------------------------------->")
     usb_modeswitch()
-    main()
+    run()
