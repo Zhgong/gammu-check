@@ -21,7 +21,7 @@ DEVICE = '/dev/ttyUSB0'
 CYCLE_TIME = 10
 
 # monitor logfile to check if gammu is dead
-LOGFILE_TIMEOUT = 60
+LOGFILE_TIMEOUT = 30
 
 restart_count = 0
 
