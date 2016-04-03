@@ -18,7 +18,12 @@ global DEVICE
 LOGFILE = '/var/log/gammu-smsd'
 DEVICE = '/dev/ttyUSB0'
 
-CYCLE_TIME = 5
+CYCLE_TIME = 10
+
+# monitor logfile to check if gammu is dead
+LOGFILE_TIMEOUT = 60
+
+restart_count = 0
 
 @click.command()
 @click.option('--interval', '-i', default=2, help='number of greetings')
@@ -57,7 +62,7 @@ def file_modified_timeout(file, seconds):
 
 # check if the gammu is dead
 def is_gammu_dead():
-    return file_modified_timeout(LOGFILE, 10)
+    return file_modified_timeout(LOGFILE, LOGFILE_TIMEOUT)
 
 
 def get_pid(name):
@@ -154,8 +159,11 @@ def start_gammu():
         return False
 
 def gammu_restart_daemon():
+    global  restart_count
     # check if gammu is dead
     if is_gammu_dead():
+        restart_count += 1
+        logging.error("---- Restart Count: %d ----" % restart_count)
         logging.error("gammu-smsd is dead, start restarting process")
         # stop gammu
         logging.info("Stopping gammu ...")
@@ -238,13 +246,13 @@ def main():
 
         if Error > 30:
             logging.info('Too many errors. Sleep 60 seconds.')
-            cycle_time = 60
+            cycle_time = 120
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         loggingfile = sys.argv[1]
     else:
         loggingfile = ''
     logging_config(loggingfile)
-    logging.info("<---------------------------------------->")
+    logging.info("<----------- START --------------------------->")
     usb_modeswitch()
     run()
