@@ -1,0 +1,15 @@
+
+[Unit]
+Description=check if gammu is still alive
+After=network.target
+
+[Service]
+ExecStart=/home/pi/gammu-check/v-env/bin/python -u gammu_check.py -i 5
+WorkingDirectory=/home/pi/gammu-check
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
