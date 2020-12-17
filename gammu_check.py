@@ -17,7 +17,7 @@ global LOGFILE
 global DEVICE
 
 LOGFILE = config.LOGFILE  # '/var/log/gammu-smsd'
-DEVICE = config.DEVICE  # '/dev/ttyUSB0'
+DEVICE = None  # first of '/dev/ttyUSB0' '/dev/ttyUSB1'
 
 CYCLE_TIME = 10
 
@@ -224,14 +224,27 @@ def usb_modeswitch():
     print('Executing command: %s' % cmd)
 
     lsres = subprocess.check_output(cmd, shell=True).decode().split('\n')
-
-    if os.path.exists(DEVICE):
+    time.sleep(1)
+    get_first_tty_usb()
+    if DEVICE:
         print("Device: %s exists! Success." % DEVICE)
         return True
     else:
-        print("Device: %s not exists! Command failed." % DEVICE)
+        print("No 'ttyUSB*' Device under /dev! Command failed.")
         return False
 
+def get_first_tty_usb():
+    global DEVICE
+    cmd = r"ls /dev/ttyUSB*"
+    try:
+        lsres = subprocess.check_output(cmd, shell=True).decode().split('\n')
+        print(lsres)
+        first_ttyUSB = lsres[0]
+    except subprocess.CalledProcessError as e:
+        first_ttyUSB = None
+
+    DEVICE = first_ttyUSB
+    return first_ttyUSB
 
 def main():
     cycle_time = 10
@@ -243,7 +256,8 @@ def main():
 
         try:
             # if usb stick not exists, sleep 60 seconds
-            if not os.path.exists(DEVICE):
+            get_first_tty_usb()
+            if not DEVICE:
                 print(
                     "Device: %s not exists! Sleep 60 seconds." % DEVICE)
                 cycle_time = 60
@@ -274,5 +288,5 @@ if __name__ == '__main__':
         loggingfile = ''
     logging_config(loggingfile)
     print("<----------- START --------------------------->")
-    usb_modeswitch()
+    # usb_modeswitch()
     run()
