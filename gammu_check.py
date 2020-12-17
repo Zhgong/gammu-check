@@ -7,5 +7,5 @@ else:
     loggingfile = ''
 run.logging_config(loggingfile)
 print("<----------- START --------------------------->")
-# usb_modeswitch()
+run.create_config_file()
 run.run()

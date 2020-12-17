@@ -1,0 +1,28 @@
+# Configuration file for Gammu SMS Daemon
+
+# Gammu library configuration, see gammurc(5)
+[gammu]
+# Please configure this!
+port = {device}
+connection = at
+# Debugging
+#logformat = textall
+
+# SMSD configuration, see gammu-smsdrc(5)
+[smsd]
+service = files
+#logfile = syslog
+logfile = /var/log/gammu-smsd
+# Increase for debugging information
+debuglevel = 4
+ReceiveFrequency = 5
+PIN = 1234
+
+# Paths where messages are stored
+inboxpath = /var/spool/gammu/inbox/
+outboxpath = /var/spool/gammu/outbox/
+sentsmspath = /var/spool/gammu/sent/
+errorsmspath = /var/spool/gammu/error/
+
+# Format, 否则inbox/下面的中文短信为乱码
+InboxFormat = unicode

@@ -13,6 +13,7 @@ import shutil
 import click
 import config
 from src import utils
+from src import create_gammu_smsdrc
 
 global LOGFILE
 global DEVICE
@@ -100,28 +101,7 @@ def get_pid(name):
 
 
 def stop_gammu():
-    name = "gammu-smsd"
-    pid = get_pid(name)
-
-    if pid < 0:
-        raise Exception("Error while getting pid of: %s" % name)
-    elif pid == 0:
-        # process is not running
-        return True
-    else:
-        # kill the gammu process
-        cmd = r"sudo kill -9 %s" % str(pid)
-        try:
-            res = subprocess.check_output(cmd, shell=True)
-            print("Process: %s with pid: %s is killed" % (name, pid))
-            return True
-        except subprocess.CalledProcessError as e:
-            if e.returncode == 1:
-                return True  # process not found,
-            else:
-                print(
-                    "Error while killing process: %s with pid: %s." % (name, pid))
-                raise
+    return subprocess.check_output("sudo /etc/init.d/gammu-smsd stop", shell=True)
 
 
 def get_huwei_usb():
@@ -157,23 +137,7 @@ def reset_huawei():
 
 # start gammu process again
 def start_gammu():
-    name = "gammu-smsd"
-    # cmd = r'sudo /etc/init.d/%s start' %name
-    cmd = r'sudo /etc/init.d/%s restart' % name
-    res = subprocess.check_output(cmd, shell=True)
-
-    print("%s" % res)
-
-    pid = get_pid(name)
-
-    if pid > 0:
-        print(
-            "Process %s is successfully started with PID: %d." % (name, pid))
-        return True
-    else:
-        print(
-            "Failed to start process %s started with PID: %d." % (name, pid))
-        return False
+    return subprocess.check_output("sudo /etc/init.d/gammu-smsd start", shell=True)
 
 
 def gammu_restart_daemon():
@@ -271,13 +235,38 @@ def main():
             print('Too many errors. Sleep 60 seconds.')
             cycle_time = 120
 
+def create_config_file():
+    """ find the first device of /dev/ttyUSB* and 
+    generate /etc/gammu-smsdrc
+    """
+    
+    global DEVICE
+    cycle_time = 10
+    print("find the first device of /dev/ttyUSB* and generate /etc/gammu-smsdrc")
+    Error = 0
+    while True:
+        # todo: if error happened too many, increase cycle time
+        time.sleep(cycle_time)
 
-if __name__ == '__main__':
-    if len(sys.argv) == 2:
-        loggingfile = sys.argv[1]
-    else:
-        loggingfile = ''
-    logging_config(loggingfile)
-    print("<----------- START --------------------------->")
-    # usb_modeswitch()
-    run()
+        try:
+            # if usb stick not exists, sleep 60 seconds
+            DEVICE = utils.get_first_tty_usb()
+            if not DEVICE:
+                print(
+                    "Device: %s not exists! Sleep 60 seconds." % DEVICE)
+                cycle_time = 60
+            else:
+
+                create_gammu_smsdrc.create_to_etc_smsdrc("/etc/gammu-smsdrc")
+                stop_gammu()
+                start_gammu()
+                Error = 0
+                cycle_time = CYCLE_TIME
+                break
+        except Exception as e:
+            print('Error: %s' % e)
+            Error += 1
+
+        if Error > 30:
+            print('Too many errors. Sleep 60 seconds.')
+            cycle_time = 120

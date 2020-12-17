@@ -1,4 +1,4 @@
-from nose.tools import *
+# from nose.tools import *
 from gammu_check import gammu_check
 
 def setup():
