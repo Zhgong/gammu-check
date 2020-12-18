@@ -20,6 +20,7 @@ global DEVICE
 
 LOGFILE = config.LOGFILE  # '/var/log/gammu-smsd'
 DEVICE = None  # first of '/dev/ttyUSB0' '/dev/ttyUSB1'
+DEVICE_OLD = None
 
 CYCLE_TIME = 10
 
@@ -224,6 +225,8 @@ def main():
             #     Error += 1
             else:
 
+                check_change_of_device()
+
                 gammu_restart_daemon()
                 Error = 0
                 cycle_time = CYCLE_TIME
@@ -241,6 +244,7 @@ def create_config_file():
     """
     
     global DEVICE
+    global DEVICE_OLD
     cycle_time = 10
     print("find the first device of /dev/ttyUSB* and generate /etc/gammu-smsdrc")
     Error = 0
@@ -262,6 +266,7 @@ def create_config_file():
                 start_gammu()
                 Error = 0
                 cycle_time = CYCLE_TIME
+                DEVICE_OLD = DEVICE
                 break
         except Exception as e:
             print('Error: %s' % e)
@@ -270,3 +275,13 @@ def create_config_file():
         if Error > 30:
             print('Too many errors. Sleep 60 seconds.')
             cycle_time = 120
+
+def check_change_of_device():
+    global DEVICE_OLD
+    if DEVICE_OLD != DEVICE:
+        print(f"device changed {DEVICE_OLD} -> {DEVICE}")
+
+        create_config_file()
+
+        DEVICE_OLD = DEVICE
+
