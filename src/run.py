@@ -13,8 +13,8 @@ import shutil
 import click
 import config
 from src import utils
-from src import create_gammu_smsdrc
-from src.E173_Dongle import E173_Dongle
+from src import gammu_smsd
+from src.E173 import E173_Dongle
 
 global LOGFILE
 global DEVICE
@@ -105,37 +105,6 @@ def get_pid(name):
 
 def stop_gammu():
     return subprocess.check_output("sudo /etc/init.d/gammu-smsd stop", shell=True)
-
-
-# def get_huwei_usb():
-#     # get huawei usbid with lsusb
-#     # --> 'Bus 001 Device 005: ID 12d1:1436 Huawei Technologies Co., Ltd. E173 3G Modem (modem-mode)'
-#     cmd = 'lsusb'
-#     lsres = subprocess.check_output(cmd, shell=True).decode().split('\n')
-
-#     for r in lsres:
-#         if 'Huawei' in r:
-#             return r
-
-
-# def get_usb_id(usb):
-#     # input 'Bus 001 Device 005: ID 12d1:1436 Huawei Technologies Co., Ltd. E173 3G Modem (modem-mode)'
-#     # output: '12d1', '1436'
-#     idRegex = re.compile(r'ID\s(.*)?:(.*)?\sHuawei')
-#     match = idRegex.search(usb)
-#     return match.groups()
-
-# reset Huawei usb UTMS disk
-
-
-# def reset_huawei():
-
-#     # execute command 'sudo usb_modeswitch -v 0x12d1 -p1436 --reset-usb'
-#     usb = e173.get_huwei_usb()
-#     id1, id2 = get_usb_id(usb)
-#     cmd = 'sudo usb_modeswitch -v 0x%s -p%s --reset-usb' % (id1, id2)
-#     print("Resetting USB with command: %s" % cmd)
-#     res = subprocess.check_output(cmd, shell=True)
 
 
 # start gammu process again
@@ -264,7 +233,7 @@ def create_config_file():
                 cycle_time = 60
             else:
 
-                create_gammu_smsdrc.create_to_etc_smsdrc("/etc/gammu-smsdrc")
+                gammu_smsd.create_to_etc_smsdrc("/etc/gammu-smsdrc")
                 stop_gammu()
                 start_gammu()
                 Error = 0
