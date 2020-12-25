@@ -41,6 +41,8 @@ screen -t bash -c watch systemctl status gammu-check
 focus up
 focus up
 resize -v -10
-# focus left
+
+focus left
+screen -t bash
 
 
