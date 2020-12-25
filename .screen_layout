@@ -1,0 +1,46 @@
+#mouse tracking allows to switch region focus by clicking
+mousetrack on
+
+# Set screen buffer
+defscrollback 40000
+
+# Enable mouse scrolling and scroll bar history scrolling
+termcapinfo xterm* ti@:te@
+
+# Enable status bar and display session name
+hardstatus on
+hardstatus alwayslastline
+hardstatus string "%S"
+
+# Bind keys for resizing
+bind L resize -h +10  # C-a L increases horizontally by 10
+bind H resize -h -10  # C-a H decreases horizontally by 10
+bind K resize -v +10  # C-a K increases vertically by 10
+bind J resize -v -10  # C-a K decreases vertically by 10
+
+# move with hjkltb
+bind h focus left
+bind j focus down
+bind k focus up
+bind l focus right
+bind t focus top
+bind b focus bottom
+
+#split layout
+
+split -v 
+focus 
+screen -t bash -c watch lsusb
+
+split
+focus
+screen -t bash -c watch tail -n 20 /var/log/gammu-smsd
+split
+focus
+screen -t bash -c watch systemctl status gammu-check 
+focus up
+focus up
+resize -v -10
+# focus left
+
+
