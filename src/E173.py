@@ -38,7 +38,7 @@ class E173_Dongle:
         # execute command 'sudo usb_modeswitch -v 0x12d1 -p1436 --reset-usb'
         usb = self.get_huwei_usb()
         id1, id2 = self.get_usb_id(usb)
-        cmd = 'sudo usb_modeswitch -v 0x%s -p%s --reset-usb' % (id1, id2)
+        cmd = 'sudo usb_modeswitch -v 0x%s -p %s --reset-usb' % (id1, id2)
         print("Resetting USB with command: %s" % cmd)
         res = subprocess.check_output(cmd, shell=True)
 
